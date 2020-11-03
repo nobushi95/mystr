@@ -5,6 +5,7 @@
 
 struct mystr {
     char *str;
+    size_t len;
 
     // コンストラクタ
     // mystr(const char *s) {
@@ -14,15 +15,17 @@ struct mystr {
     // }
 
     // コンストラクタ改
-    mystr(const char *s) {
-        str = NULL;
+    mystr(const char *s) : str(NULL) {
+        // str = NULL;
         // &operator=(const char *s)を利用
+        // NULLのdeleteは無視されるため、NULLチェック必要なし
         *this = s;
     }
 
-    mystr() {
-        str = NULL;
+    mystr() : str(NULL) {
+        // str = NULL;
         // &operator=(const char *s)を利用
+        // NULLのdeleteは無視されるため、NULLチェック必要なし
         *this = "";
     }
 
@@ -33,15 +36,16 @@ struct mystr {
     // }
 
     // コピーコンストラクタ改
-    mystr(const mystr &s) {
-        str = NULL;
+    mystr(const mystr &s) : str(NULL) {
+        // str = NULL;
         // &operator=(const char *s)を利用
+        // NULLのdeleteは無視されるため、NULLチェック必要なし
         *this = s.str;
     }
 
     // デストラクタ
     ~mystr() {
-        printf("~mystr: %s\n", str);
+        // printf("~mystr: %s\n", str);
         // free(str);
         delete[] str;
     }
@@ -50,7 +54,7 @@ struct mystr {
     // 参照で返すことによって、左辺値として代入することができる
     mystr &operator+=(const char *s) {
         char *old = str;
-        int len = strlen(str) + strlen(s);
+        len += strlen(s);
         str = new char[len + 1];
         strcpy(str, old);
         strcat(str, s);
@@ -58,9 +62,20 @@ struct mystr {
         return *this;
     }
 
+    mystr &operator+=(const mystr &s) {
+        char *old = str;
+        len += s.len;
+        str = new char[len + 1];
+        strcpy(str, old);
+        strcat(str, s.str);
+        delete[] old;
+        return *this;
+    }
+
     mystr &operator=(const char *s) {
         delete[] str;
-        str = new char[strlen(s) + 1];
+        len = strlen(s);
+        str = new char[len + 1];
         strcpy(str, s);
         return *this;
     }
@@ -70,9 +85,12 @@ struct mystr {
     void printn() const {
         printf("%s\n", str);
     }
-};
 
-void testConst(const mystr &s) {
-    // mystrがconst -> メンバなどを変更しない -> const関数しか呼べない
-    s.printn();
-}
+    void set(const char *s, size_t newlen) {
+        char *old = str;
+        len = newlen;
+        str = new char[len + 1];
+        strcpy(str, s);
+        delete[] old;
+    }
+};
