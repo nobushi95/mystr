@@ -4,12 +4,13 @@
 // using namespace std;
 
 // mystrがconst -> メンバなどを変更しない -> const関数しか呼べない
-// const参照で渡せば、コピーが発生しない
+// const参照で渡せば、コピーが発生しない -> const参照のみでコンストラクタが走る？
 void testConst(const mystr &s) {
     s.printn();
 }
 
-void testConstructorArg(const mystr &s) {
+// ただのクラス参照ではコンストラクタは走らない？
+void testRef(mystr &s) {
     s.printn();
 }
 
@@ -20,25 +21,38 @@ int main() {
     // mystr s = "abc";
     // mystr s("abc");
 
-    char buf[] = "abc";
+    // char buf[] = "abc";
     
-    mystr s = buf;
-    // mystr s(buf); // 同じ？
+    // mystr s = buf;
+    // // mystr s(buf); // 同じ
 
-    buf[0] = 'A';
+    // buf[0] = 'A';
 
-    (s += "def") += "ghi";
+    // (s += "def") += "ghi";
 
-    s.printn();
+    // s.printn();
 
-    mystr ss = "123";
-    ss.printn();
+    // mystr ss = "123";
+    // ss.printn();
 
-    mystr s1 = ss;
-    printf("s1 [%lu]:%s\n", s1.len, s1.str);
+    // mystr s1 = ss;
+    // printf("s1 [%lu]:%s\n", s1.len, s1.str);
 
-    // コンストラクタが const char * から mystr に自動的に変換
-    testConstructorArg("test constructor arg");
+    // コンストラクタが const char * から mystr に自動的に変換 -> const参照だから？
+    testConst("test constructor arg");
+
+    // ただの参照なので、これはできない -> コンストラクタが走らない？
+    // testRef("test reference constrructor arg");
+
+    // インスタンスを渡すのはOKっぽい
+    mystr tr = "test reference constructor arg";
+    testRef(tr);
+
+    // 非メンバ関数で+演算子をオーバーロード
+    // 第1引数に融通が効くように
+    mystr a = "abc";
+    mystr b = "123" + a;
+    b.printn();
 
     printf("last of main()\n");
 }

@@ -3,6 +3,8 @@
 // #include <cstdlib>
 // #include <iostream>
 
+// #define MY_DEBUG
+
 struct mystr {
     char *str;
     size_t len;
@@ -36,6 +38,7 @@ struct mystr {
     // }
 
     // コピーコンストラクタ改
+    // コピーコンストラクタはconst参照のみ？
     mystr(const mystr &s) : str(NULL) {
         // str = NULL;
         // &operator=(const char *s)を利用
@@ -45,7 +48,9 @@ struct mystr {
 
     // デストラクタ
     ~mystr() {
-        // printf("~mystr: %s\n", str);
+        #ifdef MY_DEBUG
+        printf("~mystr: %s\n", str);
+        #endif
         // free(str);
         delete[] str;
     }
@@ -80,6 +85,13 @@ struct mystr {
         return *this;
     }
 
+    // 左辺に来ないので&はつけない？
+    mystr operator+(const mystr &s) const {
+        mystr ret = *this;
+        ret += s;
+        return ret;
+    }
+
     // const関数はメンバ変数の値を変更しないことを意味する
     // 戻り値がconstではない
     void printn() const {
@@ -94,3 +106,9 @@ struct mystr {
         delete[] old;
     }
 };
+
+mystr operator+(const mystr &s1, const mystr &s2) {
+    mystr ret = s1;
+    ret += s2;
+    return ret;
+}
