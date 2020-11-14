@@ -1,7 +1,9 @@
 #include "mystr.hpp"
-
+#include <ctime>
+#include <string>
 // #include <iostream>
-// using namespace std;
+
+using namespace std;
 
 // mystrがconst -> メンバなどを変更しない -> const関数しか呼べない
 // const参照で渡せば、コピーが発生しない -> const参照のみでコンストラクタが走る？
@@ -12,6 +14,17 @@ void testConst(const mystr &s) {
 // ただのクラス参照ではコンストラクタは走らない？
 void testRef(mystr &s) {
     s.printn();
+}
+
+template <class T>
+void benchmark() {
+    double t1 = static_cast<double>(clock());
+    T s;
+    for (int i = 0; i < 500000; i++) {
+        s += "a";
+    }
+    double t2 = static_cast<double>(clock());
+    printf("%.2f sec\n", (t2 - t1) / CLOCKS_PER_SEC);
 }
 
 int main() {
@@ -53,6 +66,9 @@ int main() {
     mystr a = "abc";
     mystr b = "123" + a;
     b.printn();
+
+    benchmark<string>();
+    benchmark<mystr>();
 
     printf("last of main()\n");
 }
