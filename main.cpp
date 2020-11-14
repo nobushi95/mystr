@@ -17,14 +17,28 @@ void testRef(mystr &s) {
 }
 
 template <class T>
-void benchmark() {
+void benchmark1() {
     double t1 = static_cast<double>(clock());
     T s;
     for (int i = 0; i < 500000; i++) {
         s += "a";
     }
     double t2 = static_cast<double>(clock());
-    printf("%.2f sec\n", (t2 - t1) / CLOCKS_PER_SEC);
+    printf("benchmark1 : %.2f sec\n", (t2 - t1) / CLOCKS_PER_SEC);
+}
+
+template <class T>
+void benchmakr2() {
+    T s1, s2;
+    for (int i = 0; i < 500000; i++) {
+        s1 += "a";
+    }
+    double t1 = static_cast<double>(clock());
+    for (int i = 0; i < 500000; i++) {
+        s2 = s1;
+    }
+    double t2 = static_cast<double>(clock());
+    printf("benchmark2 : %.2f sec\n", (t2 - t1) / CLOCKS_PER_SEC);;
 }
 
 int main() {
@@ -67,8 +81,11 @@ int main() {
     mystr b = "123" + a;
     b.printn();
 
-    benchmark<string>();
-    benchmark<mystr>();
+    // benchmark1<string>();
+    // benchmark1<mystr>();
+
+    benchmakr2<string>();
+    benchmakr2<mystr>();
 
     printf("last of main()\n");
 }

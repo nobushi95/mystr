@@ -5,10 +5,16 @@
 
 // #define MY_DEBUG
 
-struct mystr {
+class mystr {
+private:
     char *str;
     size_t len;
     size_t bufsize;
+    int *refcount;
+
+public:
+    const char *c_str() const { return str; }
+    size_t lenght() const { return len; }
 
     // コンストラクタ
     // mystr(const char *s) {
@@ -56,8 +62,41 @@ struct mystr {
         delete[] str;
     }
 
+    // const関数はメンバ変数の値を変更しないことを意味する
+    // 戻り値がconstではない
+    void printn() const {
+        printf("%s\n", str);
+    }    
+
+private:
+    void set(const char *s, size_t newlen) {
+        char *old = str;
+        len = newlen;
+        if (!old || bufsize < len) {
+            if (!old) bufsize = 16;
+            while (bufsize < len) {
+                bufsize <<= 1;
+            }
+            str = new char[bufsize + 1];
+        }
+        if (str != s) strcpy(str, s);
+        if (old != str) {
+            unset(old);
+            refcount = new int(1);
+        }
+    }
+
+    void unset(char *str) {
+        if (str && --(*refcount) == 0) {
+            delete refcount;
+            delete[] str;
+        }
+    }
+
+public:
     // 参照で返さないと一時オブジェクトにコピーされて返される
     // 参照で返すことによって、左辺値として代入することができる
+    // ex. (s += "abc") += "def";
     mystr &operator+=(const char *s) {
         // char *old = str;
         // len += strlen(s);
@@ -73,6 +112,7 @@ struct mystr {
         return *this;
     }
 
+    // ex. (s += s1) += s2;
     mystr &operator+=(const mystr &s) {
         // char *old = str;
         // len += s.len;
@@ -88,48 +128,33 @@ struct mystr {
         return *this;
     }
 
+    // ex. (s = "abc") = "def";
     mystr &operator=(const char *s) {
-        delete[] str;
-        len = strlen(s);
-        str = new char[len + 1];
-        strcpy(str, s);
+        set(s, strlen(s));
         return *this;
     }
 
-    // 左辺に来ないので&はつけない？
+    // ex. (s = s1) = s2;
+    mystr &operator=(const mystr &s) {
+        set(s.str, s.len);
+        return *this;
+    }
+
+    // 左辺に来ないので&はつけない
     mystr operator+(const mystr &s) const {
         mystr ret = *this;
         ret += s;
         return ret;
     }
 
-    mystr subst(int start, int len) {
+    mystr substr(int start, int len) {
         mystr ret;
         ret.set("", len);
         strncpy(ret.str, &str[start], len);
         ret.str[len] = '\0';
         return ret;
     }
-
-    // const関数はメンバ変数の値を変更しないことを意味する
-    // 戻り値がconstではない
-    void printn() const {
-        printf("%s\n", str);
-    }
-
-    void set(const char *s, size_t newlen) {
-        char *old = str;
-        len = newlen;
-        if (!old || bufsize < len) {
-            if (!old) bufsize = 16;
-            while (bufsize < len) {
-                bufsize <<= 1;
-            }
-            str = new char[bufsize + 1];
-        }
-        if (str != s) strcpy(str, s);
-        if (old != str) delete[] old;
-    }
+    
 };
 
 // 非メンバ関数とすることで、第1引数に const char * を受け付けるようにする
