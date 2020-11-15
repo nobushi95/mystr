@@ -14,7 +14,7 @@ private:
 
 public:
     const char *c_str() const { return str; }
-    size_t lenght() const { return len; }
+    size_t length() const { return len; }
 
     // コンストラクタ
     // mystr(const char *s) {
@@ -78,6 +78,8 @@ private:
                 bufsize <<= 1;
             }
             str = new char[bufsize + 1];
+        } else if (*refcount > 1) {
+            str = new char[bufsize * 1];
         }
         if (str != s) strcpy(str, s);
         if (old != str) {

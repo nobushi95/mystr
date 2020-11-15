@@ -41,6 +41,15 @@ void benchmakr2() {
     printf("benchmark2 : %.2f sec\n", (t2 - t1) / CLOCKS_PER_SEC);;
 }
 
+template <class T>
+void buffShareTest() {
+    T s1 = "abc";
+    T s2 = s1;
+    s1 += "def";
+    printf("s1 : %d, %s\n", s1.length(), s1.c_str());
+    printf("s2 : %d, %s\n", s2.length(), s2.c_str());
+}
+
 int main() {
     // 構造体の初期化
     // mystr s = {"abc"};
@@ -84,8 +93,11 @@ int main() {
     // benchmark1<string>();
     // benchmark1<mystr>();
 
-    benchmakr2<string>();
-    benchmakr2<mystr>();
+    // benchmakr2<string>();
+    // benchmakr2<mystr>();
+
+    buffShareTest<string>();
+    buffShareTest<mystr>();
 
     printf("last of main()\n");
 }
