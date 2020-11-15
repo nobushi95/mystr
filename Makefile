@@ -1,5 +1,5 @@
 all:
-	clang++ -Wall -O2 main.cpp
+	g++ -Wall -O2 main.cpp
 	./a.out
 
 clean:
