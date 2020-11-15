@@ -142,13 +142,6 @@ public:
         return *this;
     }
 
-    // 左辺に来ないので&はつけない
-    mystr operator+(const mystr &s) const {
-        mystr ret = *this;
-        ret += s;
-        return ret;
-    }
-
     mystr substr(int start, int len) {
         mystr ret;
         ret.set("", len);
@@ -161,6 +154,8 @@ public:
 
 // 非メンバ関数とすることで、第1引数に const char * を受け付けるようにする
 // コンストラクタの引数にできる方は自動的にクラスに変換される
+// 二項演算子はクラス外で定義するほうが利便性が高い
+// 左辺に来ないので&はつけない
 mystr operator+(const mystr &s1, const mystr &s2) {
     mystr ret = s1;
     ret += s2;
