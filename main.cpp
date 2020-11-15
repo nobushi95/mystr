@@ -57,16 +57,17 @@ int main() {
     // mystr s = "abc";
     // mystr s("abc");
 
-    // char buf[] = "abc";
+    char buf[] = "abc";
     
-    // mystr s = buf;
-    // // mystr s(buf); // 同じ
+    mystr s = buf;
+    // mystr s(buf); // 同じ
 
-    // buf[0] = 'A';
+    buf[0] = 'A';
 
-    // (s += "def") += "ghi";
+    (s += "def") += "ghi";
 
-    // s.printn();
+    printf("s.printn() : ");
+    s.printn();
 
     // mystr ss = "123";
     // ss.printn();
@@ -96,8 +97,8 @@ int main() {
     // benchmakr2<string>();
     // benchmakr2<mystr>();
 
-    buffShareTest<string>();
-    buffShareTest<mystr>();
+    // buffShareTest<string>();
+    // buffShareTest<mystr>();
 
     printf("last of main()\n");
 }

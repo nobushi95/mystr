@@ -3,7 +3,7 @@
 // #include <cstdlib>
 // #include <iostream>
 
-// #define MY_DEBUG
+#define MY_DEBUG
 
 class mystr {
 private:
@@ -99,6 +99,8 @@ public:
     // 参照で返さないと一時オブジェクトにコピーされて返される
     // 参照で返すことによって、左辺値として代入することができる
     // ex. (s += "abc") += "def";
+    // mystr &operator+=(const mystr &s)でもコンストラクタが走るので、なくてもよい
+    // -> あれば無駄なコンストラクタとデストラクタが走らなくてよい
     mystr &operator+=(const char *s) {
         // char *old = str;
         // len += strlen(s);
