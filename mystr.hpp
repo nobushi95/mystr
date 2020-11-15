@@ -142,6 +142,14 @@ public:
         return *this;
     }
 
+    // これだと第一引数はmystrクラスのみ
+    // 第2引数しか融通が効かない
+    // mystr operator+(const mystr &s) const {
+    //     mystr ret = *this;
+    //     ret += s;
+    //     return ret;
+    // }
+
     mystr substr(int start, int len) {
         mystr ret;
         ret.set("", len);
